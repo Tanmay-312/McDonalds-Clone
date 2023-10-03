@@ -1,0 +1,70 @@
+import java.awt.Color;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+@SuppressWarnings("serial")
+public class PaymentCardPage extends Page {
+
+  private final PaymentCardPanel PAYMENT_CARD_PANEL = new PaymentCardPanel();
+
+  public PaymentCardPage() {
+    super(new PageData.Builder("sound/card_eng.wav")
+                      .nextPageType(PageType.END_PAGE)
+                      .previousPageType(PageType.CONFIRM_PAGE)
+                      .build());
+
+    initPage();
+    initPaymentCardPanel();
+    setListener();
+  }
+
+  private void initPage() {
+    this.setBackgroundImg("image/bg_green.png");
+    this.showBackBtn();
+  }
+
+  private void initPaymentCardPanel() {
+    final int PANEL_WIDTH = Display.WINDOWS_HALF_WIDTH * 4 / 5;
+    final int PANEL_HEIGHT = Display.WINDOWS_AVALIABLE_HEIGHT * 3 / 5;
+    PAYMENT_CARD_PANEL.setSize(PANEL_WIDTH, PANEL_HEIGHT);
+    PAYMENT_CARD_PANEL
+        .setLocation((Display.WINDOWS_HALF_WIDTH - PANEL_WIDTH) / 2, Display.WINDOWS_AVALIABLE_HEIGHT
+            / 4);
+
+    this.add(PAYMENT_CARD_PANEL);
+  }
+
+  private void setListener() {
+    PAYMENT_CARD_PANEL.getImageTextButton().addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        AudioPlayer.newInstance("sound/ing_eng.wav").play();
+
+        try {
+          Thread.sleep(5000);
+        } catch (InterruptedException e1) {
+          e1.printStackTrace();
+        } finally {
+          PaymentCardPage.this.loadNextPage();
+        }
+      }
+
+      @Override
+      public void mousePressed(MouseEvent e) {
+        PAYMENT_CARD_PANEL.getImageLabel().setIcon(ImageEdit.getResizeIcon(
+            "image/loding.jpg", Display.WINDOWS_HALF_WIDTH * 3 / 5, Display.WINDOWS_AVALIABLE_HEIGHT
+                * 2 / 5));
+      }
+
+      @Override
+      public void mouseEntered(MouseEvent e) {
+        PAYMENT_CARD_PANEL.getImageTextButton().setBackground(Color.ORANGE);
+      }
+
+      @Override
+      public void mouseExited(MouseEvent e) {
+        PAYMENT_CARD_PANEL.getImageTextButton().setBackground(Color.WHITE);
+      }
+    });
+  }
+}
